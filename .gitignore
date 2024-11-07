@@ -27,3 +27,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/src/META-INF/MANIFEST.MF
+/.idea/artifacts/Cyclearn_jar.xml
