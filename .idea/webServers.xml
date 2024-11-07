@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="bc8db123-12bf-494e-869f-1abf83b2d056" name="matou" url="http://localhost">
+        <fileTransfer mountedRoot="D:\Programmation\Deploiements\Cyclearn" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
