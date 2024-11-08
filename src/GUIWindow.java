@@ -5,12 +5,15 @@ import java.util.Arrays;
 
 public class GUIWindow extends JFrame {
     private CycPagePanel current_panel;
+
+    //Todo : ButeArrays seem to be less expensive than java objects
+    // => Idea is to serialize CycPagePanels (along with buttons actionListeners) and store this as ByteArrays
     private CycPagePanel[] history;
 
     public GUIWindow() {
         super("Cyc'Learn");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        WindowListener listener = new WindowAdapter() {
+       addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 int decision = JOptionPane.showConfirmDialog(getContentPane(),
                         "Cliquez sur \"Yes\" pour quitter l'application, \"No\" pour qu'elle continue à " +
@@ -22,9 +25,8 @@ public class GUIWindow extends JFrame {
                     e.getWindow().dispose();
                 }
             }
-        };
+        });
 
-        addWindowListener(listener);
         setSize(Utils.WIDTH, Utils.HEIGHT);
 
         current_panel = new CycPagePanel(this);
@@ -50,7 +52,6 @@ public class GUIWindow extends JFrame {
         CycPagePanel precpanel = getPrecedentPanel();
         setContentPane(precpanel);
         revalidate();
-        repaint();
         history = Arrays.copyOf(history, history.length-1);
         return precpanel;
     }

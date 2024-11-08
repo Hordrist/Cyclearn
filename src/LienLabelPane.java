@@ -46,15 +46,19 @@ public class LienLabelPane extends JPanel {
     public void asShowingLink(){
         removeAll();
         updateUI();
-        labelLien = new LienLabel(texte);
-        boutonModifier = new JButton("Modifier");
-        boutonSupprimer = new JButton("Supprimer");
 
+        boutonModifier = new JButton("Modifier");
         boutonModifier.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 asEditingLink(texte);
             }
         });
+        add(boutonModifier);
+
+        labelLien = new LienLabel(texte);
+        add(labelLien);
+
+        boutonSupprimer = new JButton("Supprimer");
         boutonSupprimer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Container parent = getParent();
@@ -65,11 +69,8 @@ public class LienLabelPane extends JPanel {
                 texte = null;
             }
         });
-
-
         add(boutonSupprimer);
-        add(labelLien);
-        add(boutonModifier);
+
     }
 
     public void removeAll(){
@@ -104,6 +105,5 @@ class LienLabel extends JLabel{
             }
         });
     }
-
 }
 

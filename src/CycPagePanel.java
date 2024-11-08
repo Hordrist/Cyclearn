@@ -21,7 +21,7 @@ public class CycPagePanel extends JPanel{
         setLayout(new BorderLayout(0,20));
 
 
-        retour = createRetourButton(PanelTypes.MENU);
+        retour = createRetourButton();
         add(retour, BorderLayout.NORTH);
 
         content = new JPanel();
@@ -34,7 +34,7 @@ public class CycPagePanel extends JPanel{
 
 
     //region Object methods
-    public JPanel createRetourButton(PanelTypes currentPanelType) {
+    public JPanel createRetourButton() {
         JPanel grouping = new JPanel();
         grouping.setLayout(new BoxLayout(grouping, BoxLayout.X_AXIS));
         JButton retour = new JButton("Retour");
@@ -100,21 +100,17 @@ public class CycPagePanel extends JPanel{
         boutonEnvoi.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //addPanelToHistory(new CycPagePanel().asFormPannel());
-                Cours cours = null;
-                cours = getCurrentCours();
-                String stringed_crous = cours.getJsonFromCours();
+                Cours cours = getCurrentCours();
 
                 try {
                     FileHandling.writeCoursToJsonFile(cours);
-                }catch (IOException e1) {
-                    e1.printStackTrace();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
         content.add(boutonEnvoi);
 
-
-        content.setVisible(true);
         return this;
     }
 
@@ -133,8 +129,8 @@ public class CycPagePanel extends JPanel{
         texteFieldPannel.getTextComponent().setEditable(false);
 
         for(String lien : cours.getLiens()){
-            JLabel lienLabel = createLinkLabel("Liens", content);
-            lienLabel.setText(lien);
+            LienLabel lienLabel = new LienLabel(lien);
+            lienLabel.setName("Lien");
             content.add(lienLabel);
         }
 
@@ -174,6 +170,8 @@ public class CycPagePanel extends JPanel{
     }
     //endregion
 
+    //Todo : Refactor and think about construction of Cours. Utiliser des Optionals ?
+    // Aussi, Renommer la région OU bouger la méthode
     //region Methods to interface JFrame and Cours objects
     public Cours getCurrentCours(){
         String nom = ((JTextComponent)Utils.getComponentByName(content, "Nom")).getText();
@@ -208,79 +206,4 @@ public class CycPagePanel extends JPanel{
 
 
     //endregion
-
-
-    //region Methods to create LinkLabels, buttons, actionlisteners, etc...
-    public static JLabel createLinkLabel(String title, JPanel parent) {
-        JLabel textlabel = new JLabel();
-        textlabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        textlabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try {
-
-                    Desktop.getDesktop().browse(new URI(textlabel.getText()));
-
-                } catch (IOException | URISyntaxException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-        return textlabel;
-    }
-
-    /*public ByteArrayOutputStream serialize() throws IOException {
-        ByteArrayOutputStream baros = new ByteArrayOutputStream();
-        ObjectOutputStream oostream = new ObjectOutputStream(baros);
-        oostream.writeObject(this);
-        oostream.flush();
-        oostream.close();
-
-        return baros;
-    }
-
-    public CycPagePanel deserialize(ByteArrayOutputStream os) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream baris = new ByteArrayInputStream(os.toByteArray());
-        ObjectInputStream oistream = new ObjectInputStream(baris);
-        CycPagePanel panel = (CycPagePanel) oistream.readObject();
-        oistream.close();
-        return panel;
-    }
-
-    public static JPanel copyPanel(JPanel panel){
-        try {
-            ByteArrayOutputStream baros = new ByteArrayOutputStream();
-            ObjectOutputStream oostream = new ObjectOutputStream(baros);
-            oostream.writeObject(panel);
-            oostream.flush();
-            oostream.close();
-
-            ByteArrayInputStream baris = new ByteArrayInputStream(baros.toByteArray());
-            ObjectInputStream oistream = new ObjectInputStream(baris);
-            JPanel copied = (JPanel) oistream.readObject();
-            oistream.close();
-            return copied;
-        }
-        catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public CycPagePanel copy() {
-        try {
-            return deserialize(serialize());
-        }catch (IOException | ClassNotFoundException e){
-            e.printStackTrace();
-            //System.exit(1);
-        }
-        return null;
-    }*/
-
-
-    //endregion
-
-    public enum PanelTypes{
-        MENU, LISTE_COURS, VISU_COURS, FORM_COURS    }
-
 }
