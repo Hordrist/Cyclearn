@@ -3,17 +3,12 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class CycPagePanel extends JPanel{
-    private static final long serialVersionUID = 1L;
-    private JPanel retour;
-    private JPanel content;
-    private GUIWindow parentFrame;
+public class CycPagePanel extends JPanel implements Serializable{
+    private final JPanel retour;
+    private final JPanel content;
+    private final JPanel footer;
 
     public CycPagePanel(GUIWindow window) {
         super();
@@ -27,9 +22,10 @@ public class CycPagePanel extends JPanel{
         content = new JPanel();
         add(content, BorderLayout.CENTER);
 
-        parentFrame = window;
-
-
+        footer = new JPanel();
+        footer.setVisible(false);
+        footer.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
+        add(footer, BorderLayout.SOUTH);
     }
 
 
@@ -38,9 +34,9 @@ public class CycPagePanel extends JPanel{
         JPanel grouping = new JPanel();
         grouping.setLayout(new BoxLayout(grouping, BoxLayout.X_AXIS));
         JButton retour = new JButton("Retour");
-        retour.addActionListener(new ActionListener() {
+        retour.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
-                parentFrame.returnToPrecedentPanel();
+                getParentFrame().returnToPrecedentPanel(CycPagePanel.this);
 
             }
         });
@@ -48,6 +44,7 @@ public class CycPagePanel extends JPanel{
         return grouping;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public CycPagePanel asMenuPanel(){
         retour.setVisible(false);
 
@@ -55,26 +52,33 @@ public class CycPagePanel extends JPanel{
         content.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
 
         JButton btn_ajout_cours = new JButton("Ajouter un cours");
-        btn_ajout_cours.addActionListener(new ActionListener() {
+        btn_ajout_cours.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
-                parentFrame.addPanelToHistory(new CycPagePanel(parentFrame).asMenuPanel());
-                CycPagePanel.this.asFormPannel();
+                CycPagePanel.this.asFormPanel();
             }
         });
         content.add(btn_ajout_cours);
 
         JButton btn_liste_cours = new JButton("Visualiser et modifier les cours");
-        btn_liste_cours.addActionListener(new ActionListener() {
+        btn_liste_cours.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
-                parentFrame.addPanelToHistory(new CycPagePanel(parentFrame).asMenuPanel());
                 CycPagePanel.this.asListeCoursPanel();
             }
         });
         content.add(btn_liste_cours);
+
+        //TL;DR Pour ajouter MenuPanel directement dans l'historique "history"
+        //Actuellement, on ajoute un panel à l'historique dès qu'on quitte ce panel AUTREMENT qu'en cliquant
+        //sur le bouton retour, afin de ne pas risquer de boucles.
+        //La particularité d'un MenuPanel, c'est qu'il n'a pas de bouton "retour".
+        //Ainsi, la seule manière d'en sortir, c'est en cliquant sur "ajouter" ou "visualiser un cours"
+        //Et donc on peut ajouter MenuPanel à l'historique dès qu'on rentre dedans
+        getParentFrame().addPanelToHistory(this);
         return this;
     }
 
-    public CycPagePanel asFormPannel(){
+    @SuppressWarnings("UnusedReturnValue")
+    public CycPagePanel asFormPanel(){
         retour.setVisible(true);
 
         content.removeAll();
@@ -87,7 +91,7 @@ public class CycPagePanel extends JPanel{
         content.add(TexteTextArea);
 
         JButton boutonAjoutLien = new JButton("Ajouter un lien");
-        boutonAjoutLien.addActionListener(new ActionListener() {
+        boutonAjoutLien.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int indexBoutonAjout = Utils.getComponentIndex(boutonAjoutLien);
                 content.add(new LienLabelPane(), indexBoutonAjout);
@@ -97,15 +101,23 @@ public class CycPagePanel extends JPanel{
         content.add(boutonAjoutLien);
 
         JButton boutonEnvoi = new JButton("Envoi");
-        boutonEnvoi.addActionListener(new ActionListener() {
+        boutonEnvoi.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //addPanelToHistory(new CycPagePanel().asFormPannel());
-                Cours cours = getCurrentCours();
-
+                Cours cours = createCoursFromForm();
                 try {
                     FileHandling.writeCoursToJsonFile(cours);
+                    showActionSuccessText(
+                            "Le cours a bien été créé.",
+                            new Callback(){
+                                @Override
+                                public void call() {
+                                    asListeCoursPanel();
+                                    updateUI();
+                                }
+                            }
+                    );
                 } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                    System.err.println("Unable to write cours to json file :\n" + ex.getMessage());
                 }
             }
         });
@@ -114,19 +126,21 @@ public class CycPagePanel extends JPanel{
         return this;
     }
 
-    public CycPagePanel asVisuPannel(Cours cours){
+    @SuppressWarnings("UnusedReturnValue")
+    public CycPagePanel asVisuPanel(Cours cours){
         retour.setVisible(true);
 
         content.removeAll();
         content.updateUI(); //Nécessaire juste ici, à voir pourquoi...
         content.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
 
-        CycTextPanel nomFieldPannel = CycTextPanel.createFormTextField("Nom", content, cours.getNom());
-        nomFieldPannel.getTextComponent().setEditable(false);
-        content.add(nomFieldPannel);
+        CycTextPanel nomFieldPanel = CycTextPanel.createFormTextField("Nom", content, cours.getNom());
+        nomFieldPanel.getTextComponent().setEditable(false);
+        content.add(nomFieldPanel);
 
-        CycTextPanel texteFieldPannel = CycTextPanel.createFormTextPane("Texte", content, cours.getTexte());
-        texteFieldPannel.getTextComponent().setEditable(false);
+        CycTextPanel texteFieldPanel = CycTextPanel.createFormTextPane("Texte", content, cours.getTexte());
+        texteFieldPanel.getTextComponent().setEditable(false);
+        content.add(texteFieldPanel);
 
         for(String lien : cours.getLiens()){
             LienLabel lienLabel = new LienLabel(lien);
@@ -137,12 +151,13 @@ public class CycPagePanel extends JPanel{
         return this;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public CycPagePanel asListeCoursPanel() {
         try {
             return asListeCoursPanel(FileHandling.getListeCoursFromJsonFile());
         }
         catch (IOException e1) {
-            e1.printStackTrace();
+            System.err.println("Error reading courses file :\n" + e1.getMessage());
             return null;
         }
     }
@@ -157,53 +172,57 @@ public class CycPagePanel extends JPanel{
         listecours_panel.setLayout(new BoxLayout(listecours_panel, BoxLayout.Y_AXIS));
         for (Cours cours : liste_cours) {
             JButton boutonCours = new JButton(cours.getNom());
-            boutonCours.addActionListener(new ActionListener() {
+            boutonCours.addActionListener(new SerializableActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
-                    parentFrame.addPanelToHistory(new CycPagePanel(parentFrame).asListeCoursPanel(liste_cours));
-                    CycPagePanel.this.asVisuPannel(cours);
+                    getParentFrame().addPanelToHistory(CycPagePanel.this);
+                    CycPagePanel.this.asVisuPanel(cours);
                 }
             });
             listecours_panel.add(boutonCours);
         }
-        content.add(listecours_panel, BorderLayout.CENTER);
+        JScrollPane displayPanel = new JScrollPane(listecours_panel);
+        displayPanel.setBorder(BorderFactory.createEmptyBorder());
+        content.add(displayPanel, BorderLayout.CENTER);
         return this;
+    }
+
+    public void showActionSuccessText(String successText, Callback callback){
+        new Thread() {
+            public void run() {
+                JLabel successLabel = new JLabel(successText);
+                successLabel.setForeground(Color.GREEN);
+                footer.add(successLabel);
+                footer.setVisible(true);
+                try {
+                    Thread.sleep(3 * 1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    footer.removeAll();
+                    footer.setVisible(false);
+                    callback.call();
+                }
+            }
+        }.start();
     }
     //endregion
 
-    //Todo : Refactor and think about construction of Cours. Utiliser des Optionals ?
-    // Aussi, Renommer la région OU bouger la méthode
     //region Methods to interface JFrame and Cours objects
-    public Cours getCurrentCours(){
+    public Cours createCoursFromForm(){
         String nom = ((JTextComponent)Utils.getComponentByName(content, "Nom")).getText();
         String texte = ((JTextComponent)Utils.getComponentByName(content, "Texte")).getText();
-        ArrayList<JComponent> arraylist_liens= Utils.getMultiComponentByName(content, "Lien");
-        //LocalDate date = LocalDate.now();
-        Date date = new Date();
-        try {
-            String dateLabel = ((JTextComponent)Utils.getComponentByName(content, "Date")).getText();
-            //DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            //date = (LocalDate) dtf.parse(dateLabel);
-            date = new SimpleDateFormat("dd/MM/yyyy").parse(dateLabel);
+        ArrayList<LienLabel> arraylist_liens= Utils.getMultiComponentByName(content, "Lien");
+        String[] liens = new String[arraylist_liens.size()];
+        for(int i = 0; i < liens.length; i++){
+            liens[i] = (arraylist_liens.get(i)).getText();
         }
-        catch (NullPointerException e){}
-        catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        JComponent[] array_liens = arraylist_liens.toArray(new JComponent[arraylist_liens.size()]);
-        String[] liens = new String[array_liens.length];
-        for(int i = 0; i < array_liens.length; i++){
-            liens[i] = ((LienLabel)(array_liens[i])).getText();
-        }
-        String idLabel="";
-        try {
-            idLabel = ((JTextComponent) Utils.getComponentByName(content, "Id")).getText();
-        }
-
-        catch (NullPointerException e){}
-        Cours cours = new Cours(nom, texte, liens, date, idLabel!=""?UUID.fromString(idLabel):UUID.randomUUID());
-        return cours;
+        return new Cours(nom, texte, liens);
     }
 
+    private GUIWindow getParentFrame(){
+        return (GUIWindow) SwingUtilities.getWindowAncestor(this);
+    }
 
     //endregion
 }

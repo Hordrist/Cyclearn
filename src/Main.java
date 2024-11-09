@@ -21,6 +21,7 @@ public class Main {
         nt.start();
 
         GUIWindow window = new GUIWindow();
+        window.initContent();
         window.showWindow();
     }
 }

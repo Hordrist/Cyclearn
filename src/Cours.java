@@ -1,11 +1,12 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
-public class Cours {
+public class Cours implements Serializable {
     private String nom;
     private String texte;
     private String[] liens;
@@ -17,19 +18,8 @@ public class Cours {
         this.nom = nom;
         this.texte = texte;
         this.liens = liens;
-        //this.date = LocalDate.now();
         this.date = new Date();
         this.id = UUID.randomUUID();
-    }
-
-    public Cours(String nom, String texte, String[] liens, Date date, UUID id){
-        this.nom = nom;
-        this.texte = texte;
-        this.liens = liens;
-        this.date = date;
-        this.id = id;
-        /*SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        this.date = DateFormat.getDateInstance().parse(sdf.format(date));*/
     }
 
     //region Attributes setters and getters
@@ -79,7 +69,6 @@ public class Cours {
 
     public String getJsonFromCours(){
         Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
-        String stringed_cours = gson.toJson(this);
-        return stringed_cours;
+        return gson.toJson(this);
     }
 }

@@ -1,13 +1,9 @@
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.Serializable;
 
-public class CycTextPanel extends JPanel {
+public class CycTextPanel extends JPanel implements Serializable {
     private JTextComponent text_component;
     public CycTextPanel() {
         super();
@@ -34,7 +30,7 @@ public class CycTextPanel extends JPanel {
         textPane.setEditable(true);
         textPane.setPreferredSize(new Dimension(parent.getWidth()/2,100));
         textPane.setName(title);
-        if (texte!="" && texte != null) {
+        if (texte.isEmpty()) {
             textPane.setText(texte);
         }
         grouping.setTextComponent(textPane);
@@ -62,7 +58,7 @@ public class CycTextPanel extends JPanel {
         JTextField textField = new JTextField();
         textField.setPreferredSize(new Dimension(parent.getWidth()/2,20));
         textField.setName(title);
-        if(texte != "" && texte != null){
+        if(texte.isEmpty()){
             textField.setText(texte);
         }
         grouping.add(textField);

@@ -5,10 +5,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class LienLabelPane extends JPanel {
+public class LienLabelPane extends JPanel implements Serializable {
     private LienLabel labelLien;
     private JButton boutonModifier;
     private JButton boutonSupprimer;
@@ -33,7 +34,7 @@ public class LienLabelPane extends JPanel {
         champLien.setText(s);
         champLien.setColumns(50);
         boutonValider = new JButton("Valider");
-        boutonValider.addActionListener(new ActionListener() {
+        boutonValider.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
                 texte = champLien.getText();
                 asShowingLink();
@@ -48,7 +49,7 @@ public class LienLabelPane extends JPanel {
         updateUI();
 
         boutonModifier = new JButton("Modifier");
-        boutonModifier.addActionListener(new ActionListener() {
+        boutonModifier.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
                 asEditingLink(texte);
             }
@@ -59,7 +60,7 @@ public class LienLabelPane extends JPanel {
         add(labelLien);
 
         boutonSupprimer = new JButton("Supprimer");
-        boutonSupprimer.addActionListener(new ActionListener() {
+        boutonSupprimer.addActionListener(new SerializableActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Container parent = getParent();
                 parent.remove(LienLabelPane.this);
@@ -83,7 +84,7 @@ public class LienLabelPane extends JPanel {
     }
 }
 
-class LienLabel extends JLabel{
+class LienLabel extends JLabel implements Serializable{
 
 
     public LienLabel(String text) {

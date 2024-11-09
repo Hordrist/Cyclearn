@@ -46,9 +46,11 @@ public class NotifSystem extends Thread {
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GUIWindow window = new GUIWindow();
+                window.initContent();
                 window.showWindow();
                 Cours[] atoday_cours = today_cours.toArray(new Cours[today_cours.size()]);
                 ((CycPagePanel)window.getContentPane()).asListeCoursPanel(atoday_cours);
+
             }
         };
         notif.setNotificationActionListener(actionListener);

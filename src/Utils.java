@@ -18,12 +18,12 @@ public class Utils {
         return -1;
     }
 
-    public static final JComponent getComponentByName(Container container, String inputname){
+    public static final <T> T getComponentByName(Container container, String inputname){
         if(container != null){
             for(int i=0;i<container.getComponentCount();i++){
                 String name = container.getComponent(i).getName();
                 if(name != null && name.equals(inputname)){
-                    return (JComponent)container.getComponent(i);
+                    return (T)container.getComponent(i);
                 }
                 try{
                     JComponent found;
@@ -31,7 +31,7 @@ public class Utils {
                     if(child!=null && child.getComponentCount()>0){
                         found =  getComponentByName(child, inputname);
                         if(found != null){
-                            return found;
+                            return (T)found;
                         }
                     }
                 }
@@ -42,13 +42,13 @@ public class Utils {
         return null;
     }
 
-    public static final ArrayList<JComponent> getMultiComponentByName(Container container, String inputname){
-        ArrayList<JComponent> components = new ArrayList<JComponent>();
+    public static final <T> ArrayList<T> getMultiComponentByName(Container container, String inputname){
+        ArrayList<T> components = new ArrayList<T>();
         if(container != null){
             for(int i=0;i<container.getComponentCount();i++){
                 String name = container.getComponent(i).getName();
                 if(name != null && name.equals(inputname)){
-                    components.add((JComponent)container.getComponent(i));
+                    components.add((T)container.getComponent(i));
                 }
             }
             for (int i = 0; i < container.getComponentCount(); i++) {
