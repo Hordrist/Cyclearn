@@ -1,3 +1,5 @@
+package utils_helpers.serialization;
+
 import java.io.*;
 
 public class SerializationUtils {

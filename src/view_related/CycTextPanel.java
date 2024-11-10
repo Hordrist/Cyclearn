@@ -1,3 +1,5 @@
+package view_related;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;

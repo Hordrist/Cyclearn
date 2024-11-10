@@ -1,3 +1,11 @@
+package view_related;
+
+import business_objects.Cours;
+import utils_helpers.Callback;
+import utils_helpers.FileHandling;
+import utils_helpers.Utils;
+import utils_helpers.serialization.SerializableActionListener;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -225,7 +233,7 @@ public class CycPagePanel extends JPanel implements Serializable{
                     JPanel parentPanel = (JPanel) panel.getParent();
                     parentPanel.remove(panel);
                     parentPanel.updateUI();
-                    System.out.println("Cours supprimé");
+                    System.out.println("business_objects.Cours supprimé");
                 } catch (IOException ex) {
                     System.err.println("Erreur lors de la suppression du cours");
                 }
@@ -238,10 +246,10 @@ public class CycPagePanel extends JPanel implements Serializable{
 
     //endregion
 
-    //region Methods to interface JFrame and Cours objects
+    //region Methods to interface JFrame and business_objects.Cours objects
     public Cours createCoursFromForm(){
-        String nom = ((JTextComponent)Utils.getComponentByName(content, "Nom")).getText();
-        String texte = ((JTextComponent)Utils.getComponentByName(content, "Texte")).getText();
+        String nom = ((JTextComponent) Utils.getComponentByName(content, "Nom")).getText();
+        String texte = ((JTextComponent) Utils.getComponentByName(content, "Texte")).getText();
         ArrayList<LienLabel> arraylist_liens= Utils.getMultiComponentByName(content, "Lien");
         String[] liens = new String[arraylist_liens.size()];
         for(int i = 0; i < liens.length; i++){

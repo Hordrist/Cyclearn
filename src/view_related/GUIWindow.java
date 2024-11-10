@@ -1,3 +1,8 @@
+package view_related;
+
+import utils_helpers.Utils;
+import utils_helpers.serialization.SerializationUtils;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.Serializable;

@@ -1,10 +1,16 @@
+package notification;
+
+import business_objects.Cours;
+import utils_helpers.FileHandling;
+import view_related.CycPagePanel;
+import view_related.GUIWindow;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,7 +48,7 @@ public class NotifSystem extends Thread {
                 today_cours.add(cours);
             }
         }
-        Notification notif = new Notification("Cyclearn", "Cours du jour");
+        Notification notif = new Notification("Cyclearn", "business_objects.Cours du jour");
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GUIWindow window = new GUIWindow();

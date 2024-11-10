@@ -1,8 +1,9 @@
+package business_objects;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 

@@ -1,7 +1,6 @@
-import javax.swing.*;
+package notification;
+
 import java.awt.*;
-import java.awt.TrayIcon.MessageType;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Notification extends TrayIcon{
