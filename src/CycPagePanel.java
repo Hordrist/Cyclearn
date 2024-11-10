@@ -171,15 +171,8 @@ public class CycPagePanel extends JPanel implements Serializable{
         JPanel listecours_panel = new JPanel();
         listecours_panel.setLayout(new BoxLayout(listecours_panel, BoxLayout.Y_AXIS));
         for (Cours cours : liste_cours) {
-            JButton boutonCours = new JButton(cours.getNom());
-            boutonCours.addActionListener(new SerializableActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    getParentFrame().addPanelToHistory(CycPagePanel.this);
-                    CycPagePanel.this.asVisuPanel(cours);
-                }
-            });
-            listecours_panel.add(boutonCours);
+            JPanel cours_panel = createCoursButtonForListe(cours);
+            listecours_panel.add(cours_panel);
         }
         JScrollPane displayPanel = new JScrollPane(listecours_panel);
         displayPanel.setBorder(BorderFactory.createEmptyBorder());
@@ -206,6 +199,43 @@ public class CycPagePanel extends JPanel implements Serializable{
             }
         }.start();
     }
+
+    public JPanel createCoursButtonForListe(Cours cours){
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JButton boutonCours = new JButton(cours.getNom());
+        boutonCours.addActionListener(new SerializableActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getParentFrame().addPanelToHistory(CycPagePanel.this);
+                CycPagePanel.this.asVisuPanel(cours);
+            }
+        });
+        panel.add(boutonCours);
+
+        ImageIcon trashicon = new ImageIcon("assets/trash-icon.png");
+        JButton supprimerCours = new JButton(trashicon);
+        supprimerCours.setPreferredSize(new Dimension(trashicon.getIconWidth()+10,
+                trashicon.getIconHeight()+10));
+        supprimerCours.addActionListener(new SerializableActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    FileHandling.deleteCoursFromJsonFile(cours);
+                    JPanel parentPanel = (JPanel) panel.getParent();
+                    parentPanel.remove(panel);
+                    parentPanel.updateUI();
+                    System.out.println("Cours supprimé");
+                } catch (IOException ex) {
+                    System.err.println("Erreur lors de la suppression du cours");
+                }
+            }
+        });
+        panel.add(supprimerCours);
+        return panel;
+
+    }
+
     //endregion
 
     //region Methods to interface JFrame and Cours objects

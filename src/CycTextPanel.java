@@ -30,7 +30,7 @@ public class CycTextPanel extends JPanel implements Serializable {
         textPane.setEditable(true);
         textPane.setPreferredSize(new Dimension(parent.getWidth()/2,100));
         textPane.setName(title);
-        if (texte.isEmpty()) {
+        if (!texte.isEmpty()) {
             textPane.setText(texte);
         }
         grouping.setTextComponent(textPane);
@@ -58,7 +58,7 @@ public class CycTextPanel extends JPanel implements Serializable {
         JTextField textField = new JTextField();
         textField.setPreferredSize(new Dimension(parent.getWidth()/2,20));
         textField.setName(title);
-        if(texte.isEmpty()){
+        if(!texte.isEmpty()){
             textField.setText(texte);
         }
         grouping.add(textField);

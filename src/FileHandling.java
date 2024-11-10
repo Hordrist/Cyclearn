@@ -106,4 +106,14 @@ public class FileHandling {
         writeFile(DEFAULT_FILE_PATH, gson.toJson(saved_cours));
     }
 
+    public static void writeAllCoursToJsonFile(Cours[] cours) throws IOException {
+        Gson gson = new GsonBuilder().setDateFormat("dd/MM/yyyy").create();
+        String stringed_courses = gson.toJson(cours);
+        writeFile(DEFAULT_FILE_PATH, stringed_courses);
+    }
+    public static void deleteCoursFromJsonFile(Cours cours) throws IOException {
+        List<Cours> liste_cours = new ArrayList<>(List.of(getListeCoursFromJsonFile()));
+        liste_cours.removeIf(c->c.id.equals(cours.id));
+        writeAllCoursToJsonFile(liste_cours.toArray(new Cours[liste_cours.size()]));
+    }
 }
