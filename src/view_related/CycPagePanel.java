@@ -57,7 +57,7 @@ public class CycPagePanel extends JPanel implements Serializable{
         retour.setVisible(false);
 
         content.removeAll();
-        content.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
+        content.setLayout(new CenteredBoxLayout(content, BoxLayout.PAGE_AXIS));
 
         JButton btn_ajout_cours = new JButton("Ajouter un cours");
         btn_ajout_cours.addActionListener(new SerializableActionListener() {
@@ -73,6 +73,7 @@ public class CycPagePanel extends JPanel implements Serializable{
                 CycPagePanel.this.asListeCoursPanel();
             }
         });
+        //btn_liste_cours.setAlignmentX(Component.CENTER_ALIGNMENT);
         content.add(btn_liste_cours);
 
         //TL;DR Pour ajouter MenuPanel directement dans l'historique "history"
@@ -90,7 +91,7 @@ public class CycPagePanel extends JPanel implements Serializable{
         retour.setVisible(true);
 
         content.removeAll();
-        content.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
+        content.setLayout(new CenteredBoxLayout(content, BoxLayout.PAGE_AXIS));
 
         JPanel NomTextField = CycTextPanel.createFormTextField("Nom", content);
         content.add(NomTextField);
@@ -131,6 +132,10 @@ public class CycPagePanel extends JPanel implements Serializable{
         });
         content.add(boutonEnvoi);
 
+        Dimension dim_to_fill = Utils.getDimensionToFill(content, Utils.ToFill.FILL_HEIGHT);
+        content.add(new Box.Filler(dim_to_fill,dim_to_fill,dim_to_fill));
+        System.out.println(NomTextField.getPreferredSize());
+
         return this;
     }
 
@@ -140,7 +145,7 @@ public class CycPagePanel extends JPanel implements Serializable{
 
         content.removeAll();
         content.updateUI(); //Nécessaire juste ici, à voir pourquoi...
-        content.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
+        content.setLayout(new CenteredBoxLayout(content, BoxLayout.PAGE_AXIS));
 
         CycTextPanel nomFieldPanel = CycTextPanel.createFormTextField("Nom", content, cours.getNom());
         nomFieldPanel.getTextComponent().setEditable(false);
@@ -174,17 +179,13 @@ public class CycPagePanel extends JPanel implements Serializable{
         retour.setVisible(true);
 
         content.removeAll();
-        content.setLayout(new BorderLayout(0, 10));
-
-        JPanel listecours_panel = new JPanel();
-        listecours_panel.setLayout(new BoxLayout(listecours_panel, BoxLayout.Y_AXIS));
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         for (Cours cours : liste_cours) {
             JPanel cours_panel = createCoursButtonForListe(cours);
-            listecours_panel.add(cours_panel);
+            content.add(cours_panel);
         }
-        JScrollPane displayPanel = new JScrollPane(listecours_panel);
-        displayPanel.setBorder(BorderFactory.createEmptyBorder());
-        content.add(displayPanel, BorderLayout.CENTER);
+        Dimension filler_dim = Utils.getDimensionToFill(content, Utils.ToFill.FILL_HEIGHT);
+        content.add(new Box.Filler(filler_dim,filler_dim,filler_dim));
         return this;
     }
 

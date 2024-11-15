@@ -17,12 +17,13 @@ public class LienLabelPane extends JPanel implements Serializable {
     private JButton boutonModifier;
     private JButton boutonSupprimer;
     private JButton boutonValider;
+    private JButton boutonFichier;
     private JTextField champLien;
     private String texte;
 
     public LienLabelPane() {
         super();
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new FlowLayout(FlowLayout.CENTER));
         asEditingLink();
     }
 
@@ -43,6 +44,21 @@ public class LienLabelPane extends JPanel implements Serializable {
                 asShowingLink();
             }
         });
+        boutonFichier = new JButton("Browse files");
+        boutonFichier.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JPanel fcpanel = new JPanel();
+                JFileChooser fc = new JFileChooser();
+                fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                fc.setMultiSelectionEnabled(false);
+                int returnval = fc.showDialog(fcpanel, "Open");
+                if(returnval == JFileChooser.APPROVE_OPTION) {
+                    String path = fc.getSelectedFile().toURI().toString();
+                    champLien.setText(path);
+                }
+            }
+        });
+        add(boutonFichier);
         add(champLien);
         add(boutonValider);
     }

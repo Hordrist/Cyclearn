@@ -67,4 +67,27 @@ public class Utils {
         return components;
     }
 
+    public static Dimension getDimensionToFill(Container container, ToFill to_fill) {
+        Dimension dimension = container.getSize();
+        for (Component component : container.getComponents()) {
+            switch (to_fill){
+                case FILL_BOTH:
+                    dimension.width -= component.getPreferredSize().width;
+                    dimension.height -= component.getPreferredSize().height;
+                    break;
+                case FILL_WIDTH:
+                    dimension.width -= component.getPreferredSize().width;
+                    break;
+                case FILL_HEIGHT:
+                    dimension.height -= component.getPreferredSize().height;
+                    break;
+            }
+        }
+        return dimension;
+    }
+
+    public static enum ToFill{
+        FILL_HEIGHT, FILL_WIDTH, FILL_BOTH
+    }
+
 }

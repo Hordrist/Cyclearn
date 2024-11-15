@@ -1,5 +1,7 @@
 package view_related;
 
+import utils_helpers.Utils;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -30,14 +32,14 @@ public class CycTextPanel extends JPanel implements Serializable {
         JTextPane textPane = new JTextPane();
         textPane.setVisible(true);
         textPane.setEditable(true);
-        textPane.setPreferredSize(new Dimension(parent.getWidth()/2,100));
         textPane.setName(title);
         if (!texte.isEmpty()) {
             textPane.setText(texte);
         }
-        grouping.setTextComponent(textPane);
-
         JScrollPane scrollPane = new JScrollPane(textPane);
+        scrollPane.setMaximumSize(new Dimension(Utils.WIDTH/2,Utils.HEIGHT/3));
+        scrollPane.setPreferredSize(scrollPane.getMaximumSize());
+        grouping.setTextComponent(textPane);
         grouping.add(scrollPane);
 
         grouping.setVisible(true);
@@ -56,13 +58,12 @@ public class CycTextPanel extends JPanel implements Serializable {
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         grouping.add(label);
 
-
         JTextField textField = new JTextField();
-        textField.setPreferredSize(new Dimension(parent.getWidth()/2,20));
         textField.setName(title);
         if(!texte.isEmpty()){
             textField.setText(texte);
         }
+        textField.setMaximumSize(new Dimension(Utils.WIDTH/2,textField.getPreferredSize().height));
         grouping.add(textField);
         grouping.setTextComponent(textField);
 
@@ -72,6 +73,5 @@ public class CycTextPanel extends JPanel implements Serializable {
     public static CycTextPanel createFormTextField(String title, JPanel parent) {
         return createFormTextField(title, parent, "");
     }
-
 
 }
