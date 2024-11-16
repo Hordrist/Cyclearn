@@ -3,6 +3,7 @@ package view_related;
 import business_objects.Cours;
 import utils_helpers.Callback;
 import utils_helpers.FileHandling;
+import utils_helpers.TimingUtils;
 import utils_helpers.Utils;
 import utils_helpers.serialization.SerializableActionListener;
 
@@ -75,6 +76,14 @@ public class CycPagePanel extends JPanel implements Serializable{
         });
         //btn_liste_cours.setAlignmentX(Component.CENTER_ALIGNMENT);
         content.add(btn_liste_cours);
+
+        JButton btn_liste_cours_today = new JButton("Visualiser les cours à réviser aujourd'hui");
+        btn_liste_cours_today.addActionListener(new SerializableActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                CycPagePanel.this.asListeCoursPanel(TimingUtils.getCoursForTheDay());
+            }
+        });
+        content.add(btn_liste_cours_today);
 
         //TL;DR Pour ajouter MenuPanel directement dans l'historique "history"
         //Actuellement, on ajoute un panel à l'historique dès qu'on quitte ce panel AUTREMENT qu'en cliquant

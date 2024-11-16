@@ -2,6 +2,7 @@ package notification;
 
 import business_objects.Cours;
 import utils_helpers.FileHandling;
+import utils_helpers.TimingUtils;
 import view_related.CycPagePanel;
 import view_related.GUIWindow;
 
@@ -22,7 +23,6 @@ public class NotifSystem extends Thread {
             LocalTime.of(12,45,0),
             LocalTime.of(19,30,0),
     };
-    private static int[] leitnerInvervals = new int[]{1,3,7,30,6*30,12*30,3*12*30};//Les jours d'intervale
 
     private boolean runned = false;
     private Cours[] liste_cours;
@@ -39,7 +39,7 @@ public class NotifSystem extends Thread {
 
 
     public void getNotifForTheDay() throws AWTException {
-        Cours[] today_cours = getCoursForTheDay();
+        Cours[] today_cours = TimingUtils.getCoursForTheDay();
         Notification notif = new Notification("Cyclearn", "Cours du jour");
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -52,26 +52,6 @@ public class NotifSystem extends Thread {
         };
         notif.setNotificationActionListener(actionListener);
         notif.show();
-    }
-
-    public Cours[] getCoursForTheDay(){
-        ArrayList<Cours> today_cours = new ArrayList<Cours>();
-        for(Cours cours : liste_cours){
-            if(cours.getDate() != null && leintnerIntervalHasPassed(cours.getDate())){
-                today_cours.add(cours);
-            }
-        }
-        return today_cours.toArray(new Cours[0]);
-    }
-
-    public static boolean leintnerIntervalHasPassed(LocalDate start_date){
-        LocalDate today_date = LocalDate.now();
-        for(int interval : leitnerInvervals){
-            if(start_date.plusDays(interval).equals(today_date)){
-                return true;
-            }
-        }
-        return false;
     }
 
     public void run() {
