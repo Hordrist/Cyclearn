@@ -19,14 +19,19 @@ public class GUIWindow extends JFrame implements Serializable {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
        addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int decision = JOptionPane.showConfirmDialog(getContentPane(),
-                        "Cliquez sur \"Yes\" pour quitter l'application, \"No\" pour qu'elle continue à " +
-                                "tourner en arrière plan.");
-                if (decision == JOptionPane.YES_OPTION) {
-                    System.exit(0);
-                }
-                if(decision == JOptionPane.NO_OPTION) {
+                if(Utils.NUMBER_OF_OPENED_WINDOWS <=1) {
+                    int decision = JOptionPane.showConfirmDialog(getContentPane(),
+                            "Cliquez sur \"Yes\" pour quitter l'application, \"No\" pour qu'elle continue à " +
+                                    "tourner en arrière plan.");
+                    if (decision == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                    if (decision == JOptionPane.NO_OPTION) {
+                        e.getWindow().dispose();
+                    }
+                }else{
                     e.getWindow().dispose();
+                    Utils.NUMBER_OF_OPENED_WINDOWS-=1;
                 }
             }
         });
@@ -34,6 +39,8 @@ public class GUIWindow extends JFrame implements Serializable {
         setSize(Utils.WIDTH, Utils.HEIGHT);
 
         history = new byte[0][];
+
+        Utils.NUMBER_OF_OPENED_WINDOWS+=1;
     }
 
     public void initContent(){

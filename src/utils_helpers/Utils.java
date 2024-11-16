@@ -8,6 +8,7 @@ public class Utils {
 
     public static int WIDTH = 800;
     public static int HEIGHT = 600;
+    public static int NUMBER_OF_OPENED_WINDOWS = 0;
 
     public static final int getComponentIndex(JComponent component) {
         if (component != null && component.getParent() != null) {

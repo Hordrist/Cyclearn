@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -56,11 +58,14 @@ public class Cours implements Serializable {
         this.liens = liens;
     }
 
-    public Date getDate() {
-        return date;
+    public LocalDate getDate() {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
     public void setDate(Date date) {
         this.date = date;
+    }
+    public void setDate(LocalDate date) {
+        this.date = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
     }
     public void setDate(){
         //this.date = LocalDate.now();
