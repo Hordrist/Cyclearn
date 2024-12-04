@@ -29,7 +29,9 @@ public class CycPagePanel extends JPanel implements Serializable{
         add(retour, BorderLayout.NORTH);
 
         content = new JPanel();
-        add(content, BorderLayout.CENTER);
+        JScrollPane content_scrollPane = new JScrollPane(content);
+        content_scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        add(content_scrollPane, BorderLayout.CENTER);
 
         footer = new JPanel();
         footer.setVisible(false);
