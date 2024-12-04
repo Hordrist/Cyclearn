@@ -3,6 +3,7 @@ package notification;
 import business_objects.Cours;
 import utils_helpers.FileHandling;
 import utils_helpers.TimingUtils;
+import utils_helpers.Utils;
 import view_related.CycPagePanel;
 import view_related.GUIWindow;
 
@@ -19,14 +20,18 @@ import java.util.List;
 public class NotifSystem extends Thread {
     private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static LocalTime[] notifTimes = new LocalTime[] {
-            LocalTime.of(9,0,0),
+            LocalTime.of(7,45,0),
+            LocalTime.of(9,50,0),
             LocalTime.of(12,45,0),
+            LocalTime.of(13,30,0),
+            LocalTime.of(15,50,0),
+            LocalTime.of(19,0,0),
             LocalTime.of(19,30,0),
+            LocalTime.of(20,30,0),
+            LocalTime.of(21,30,0),
     };
-
     private boolean runned = false;
     private Cours[] liste_cours;
-
     public NotifSystem() throws IOException{
         super();
         liste_cours = FileHandling.getListeCoursFromJsonFile();
@@ -39,8 +44,9 @@ public class NotifSystem extends Thread {
 
 
     public void getNotifForTheDay() throws AWTException {
+        removeFormerNotifs();
         Cours[] today_cours = TimingUtils.getCoursForTheDay();
-        Notification notif = new Notification("Cyclearn", "Cours du jour");
+        Notification notif = new Notification("Cyc'learn", "Cours du jour : " + today_cours.length);
         ActionListener actionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 GUIWindow window = new GUIWindow();
@@ -78,6 +84,11 @@ public class NotifSystem extends Thread {
                 runned = false;
             }
         }
+    }
+
+    public void removeFormerNotifs(){
+        TrayIcon[] former_notifs_array = Utils.getSystemTray().getTrayIcons();
+        Arrays.stream(former_notifs_array).forEach(n->Utils.getSystemTray().remove(n));
     }
 
 }

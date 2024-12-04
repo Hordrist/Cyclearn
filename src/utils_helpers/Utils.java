@@ -91,4 +91,11 @@ public class Utils {
         FILL_HEIGHT, FILL_WIDTH, FILL_BOTH
     }
 
+    public static SystemTray getSystemTray() {
+        if (SystemTray.isSupported()) {
+            return SystemTray.getSystemTray();
+        }
+        throw new RuntimeException("SystemTray not supported");
+    }
+
 }

@@ -28,6 +28,10 @@ bin/
 ### VS Code ###
 .vscode/
 
+### Visual Studio ###
+.vs/
+.vs/**
+
 ### Mac OS ###
 .DS_Store
 /src/META-INF/MANIFEST.MF

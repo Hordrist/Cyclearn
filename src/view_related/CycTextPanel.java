@@ -37,7 +37,10 @@ public class CycTextPanel extends JPanel implements Serializable {
             textPane.setText(texte);
         }
         JScrollPane scrollPane = new JScrollPane(textPane);
-        scrollPane.setMaximumSize(new Dimension(Utils.WIDTH/2,Utils.HEIGHT/3));
+        scrollPane.setMaximumSize(new Dimension(
+                parent.getSize().width/2,
+                parent.getSize().height/3)
+        );
         scrollPane.setPreferredSize(scrollPane.getMaximumSize());
         grouping.setTextComponent(textPane);
         grouping.add(scrollPane);
@@ -63,7 +66,8 @@ public class CycTextPanel extends JPanel implements Serializable {
         if(!texte.isEmpty()){
             textField.setText(texte);
         }
-        textField.setMaximumSize(new Dimension(Utils.WIDTH/2,textField.getPreferredSize().height));
+        textField.setMaximumSize(new Dimension(
+                parent.getSize().width/2,textField.getPreferredSize().height));
         grouping.add(textField);
         grouping.setTextComponent(textField);
 

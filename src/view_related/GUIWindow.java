@@ -46,6 +46,7 @@ public class GUIWindow extends JFrame implements Serializable {
     public void initContent(){
         current_panel = new CycPagePanel(this);
         setContentPane(current_panel);
+        revalidate();
         current_panel.asMenuPanel();
     }
 

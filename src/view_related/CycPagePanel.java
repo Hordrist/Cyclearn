@@ -12,18 +12,18 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 
 public class CycPagePanel extends JPanel implements Serializable{
-    private final JPanel retour;
-    private final JPanel content;
-    private final JPanel footer;
+    private JPanel retour;
+    private JPanel content;
+    private JPanel footer;
 
     public CycPagePanel(GUIWindow window) {
         super();
-        setSize(Utils.WIDTH, Utils.HEIGHT);
         setLayout(new BorderLayout(0,20));
-
 
         retour = createRetourButton();
         add(retour, BorderLayout.NORTH);
@@ -33,8 +33,17 @@ public class CycPagePanel extends JPanel implements Serializable{
 
         footer = new JPanel();
         footer.setVisible(false);
-        footer.setLayout(new FlowLayout(FlowLayout.CENTER, Utils.WIDTH, 10));
+        footer.setLayout(new FlowLayout(FlowLayout.CENTER));
         add(footer, BorderLayout.SOUTH);
+
+        /*addContainerListener(new ContainerListener() {
+            public void componentAdded(ContainerEvent e) {
+                getParentFrame().revalidate();
+            }
+            public void componentRemoved(ContainerEvent e) {
+                getParentFrame().revalidate();
+            }
+        });*/
     }
 
 
@@ -231,7 +240,9 @@ public class CycPagePanel extends JPanel implements Serializable{
         });
         panel.add(boutonCours);
 
-        ImageIcon trashicon = new ImageIcon("assets/trash-icon.png");
+        ImageIcon trashicon = null;
+        trashicon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("trash-icon.png")));
+
         JButton supprimerCours = new JButton(trashicon);
         supprimerCours.setPreferredSize(new Dimension(trashicon.getIconWidth()+10,
                 trashicon.getIconHeight()+10));
@@ -271,6 +282,5 @@ public class CycPagePanel extends JPanel implements Serializable{
     private GUIWindow getParentFrame(){
         return (GUIWindow) SwingUtilities.getWindowAncestor(this);
     }
-
     //endregion
 }
